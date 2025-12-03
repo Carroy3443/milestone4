@@ -21,11 +21,18 @@ app.add_middleware(
 
 # Support both script execution (fastapi run app/main.py) and module execution (uvicorn app.main:app)
 try:
-    from app.db import get_db
+    from app.db import get_db, engine
+    from app.models import Base
     from app import crud, schemas, clustering
 except ImportError:
-    from db import get_db
+    from db import get_db, engine
+    from models import Base
     import crud, schemas, clustering
+
+# Create database tables on startup
+@app.on_event("startup")
+def startup_event():
+    Base.metadata.create_all(bind=engine)
 
 # ---------------- helpers ----------------
 
