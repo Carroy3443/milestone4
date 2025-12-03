@@ -1,0 +1,24 @@
+# Force rebuild - deployment cache invalidation v2
+[tool.poetry]
+name = "ngr001-backend"
+version = "0.1.2"
+description = "NGR001 Geospatial API"
+authors = ["Devin"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = {version = "0.115.6", extras = ["standard"]}
+uvicorn = {version = "0.30.6", extras = ["standard"]}
+sqlalchemy = "2.0.36"
+psycopg2-binary = "2.9.9"
+pydantic = "2.9.2"
+h3 = "3.7.7"
+numpy = "1.26.4"
+scikit-learn = "1.5.2"
+python-dateutil = "2.9.0.post0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

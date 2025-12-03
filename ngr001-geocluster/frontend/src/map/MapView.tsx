@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { H3HexagonLayer } from "@deck.gl/geo-layers";
@@ -94,10 +94,10 @@ export default function MapView() {
           elevationScale: 20,
           extruded: true,
           pickable: true,
-          getFillColor: (d: H3Agg) => [20, 120, 220, 180],
+          getFillColor: (_d: H3Agg) => [20, 120, 220, 180],
           wrapLongitude: false,
 
-          onClick: (info, event) => {
+          onClick: (info, _event) => {
             if (!info.object) return;
 
             const hex = info.object.h3

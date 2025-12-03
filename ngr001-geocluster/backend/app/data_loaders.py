@@ -4,7 +4,11 @@ import re
 from datetime import datetime
 from typing import Iterator, List, Dict, Optional
 from pathlib import Path
-from .schemas import EventIn
+# Support both script execution and module execution
+try:
+    from app.schemas import EventIn
+except ImportError:
+    from schemas import EventIn
 
 # =========================
 # Helpers: encoding + CSV

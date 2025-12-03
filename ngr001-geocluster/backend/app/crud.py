@@ -7,7 +7,11 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 
-from . import models, schemas
+# Support both script execution and module execution
+try:
+    from app import models, schemas
+except ImportError:
+    import models, schemas
 
 BBox = Tuple[float, float, float, float]
 logger = logging.getLogger("uvicorn.error")

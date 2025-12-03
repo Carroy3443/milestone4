@@ -14,14 +14,25 @@ import sys
 from pathlib import Path
 from typing import Callable, Iterable, Optional, List
 
-from .data_loaders import (
-    load_noaa_severe_weather,
-    load_us_weather_events,
-    load_us_accidents,
-)
-from .crud import bulk_insert_events
-from .db import SessionLocal
-from .schemas import EventIn
+# Support both script execution and module execution
+try:
+    from app.data_loaders import (
+        load_noaa_severe_weather,
+        load_us_weather_events,
+        load_us_accidents,
+    )
+    from app.crud import bulk_insert_events
+    from app.db import SessionLocal
+    from app.schemas import EventIn
+except ImportError:
+    from data_loaders import (
+        load_noaa_severe_weather,
+        load_us_weather_events,
+        load_us_accidents,
+    )
+    from crud import bulk_insert_events
+    from db import SessionLocal
+    from schemas import EventIn
 
 
 def _ingest(

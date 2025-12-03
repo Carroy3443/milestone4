@@ -19,8 +19,13 @@ app.add_middleware(
     max_age=86400,
 )
 
-from .db import get_db
-from . import crud, schemas, clustering
+# Support both script execution (fastapi run app/main.py) and module execution (uvicorn app.main:app)
+try:
+    from app.db import get_db
+    from app import crud, schemas, clustering
+except ImportError:
+    from db import get_db
+    import crud, schemas, clustering
 
 # ---------------- helpers ----------------
 
