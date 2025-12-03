@@ -61,12 +61,14 @@ def query_events(
     src_list = _as_array_param(sources or [])
 
     # base SQL + params
+    # Use simple lat/lon bounding box query (no PostGIS required)
     if bbox:
         minx, miny, maxx, maxy = bbox
         sql = (
             "SELECT * FROM events "
             "WHERE occurred_at >= :start AND occurred_at < :end "
-            "AND ST_Intersects(geom::geometry, ST_MakeEnvelope(:minx,:miny,:maxx,:maxy,4326)) "
+            "AND lon >= :minx AND lon <= :maxx "
+            "AND lat >= :miny AND lat <= :maxy "
         )
         params = {
             "start": start, "end": end,
