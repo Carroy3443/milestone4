@@ -1,6 +1,10 @@
 from datetime import datetime, timedelta
 import random
-from .schemas import EventIn
+# Support both script execution and module execution
+try:
+    from app.schemas import EventIn
+except ImportError:
+    from schemas import EventIn
 
 TYPES = ["earthquake","power_outage","traffic","incident"]
 
