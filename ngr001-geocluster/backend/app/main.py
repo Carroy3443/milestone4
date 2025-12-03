@@ -1,4 +1,3 @@
-raise RuntimeError("NEW_MAIN_REACHED - This proves the deploy tool is using the correct file")
 from __future__ import annotations
 from datetime import datetime
 from typing import Optional, List, Iterable
