@@ -13,7 +13,7 @@ class EventIn(BaseModel):
 class EventUpdate(BaseModel):
     id: int
     type: Optional[str] = None
-    severity: Optional[str] = None
+    severity: Optional[int] = None
     occurred_at: Optional[datetime] = None
     
 class EventOut(EventIn):

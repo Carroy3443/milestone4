@@ -22,24 +22,32 @@ def bulk_insert_events(db: Session, items: List[schemas.EventIn]) -> int:
     db.commit()
     return len(objs)
 
-def bulk_update_events(db:Session, items):
+def bulk_update_events(db: Session, items):
     count = 0
     for event in items:
         try:
-            db.execute(text("""
-                        UPDATE events
-                        SET type = COALESCE(:type, type),
-                            occurred_at = COALESCE(:date, occurred_at)
-                            severity = COALESCE(:severity, severity)
-                        WHERE id = :id
-                        """), {"id":event.id, "type":event.type, "severity":event.severity, "date":event.occurred_at})
+            db.execute(
+                text("""
+                    UPDATE events
+                    SET type = COALESCE(:type, type),
+                        occurred_at = COALESCE(:date, occurred_at),
+                        severity = COALESCE(:severity, severity)
+                    WHERE id = :id
+                """),
+                {
+                    "id": event.id,
+                    "type": event.type,
+                    "severity": event.severity,
+                    "date": event.occurred_at,
+                },
+            )
             count += 1
         except SQLAlchemyError as e:
             logger.error("SQL UPDATE ERROR for id %s: %s", event.id, str(e))
             logger.exception(e)
             db.rollback()
             raise
-    
+
     db.commit()
     return count
 
