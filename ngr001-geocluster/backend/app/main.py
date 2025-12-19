@@ -1,3 +1,26 @@
+"""
+NGR001 Geospatial API - Main Application Module
+
+This module defines the FastAPI application and REST API endpoints for the
+NGR001 Real-Time Geospatial Event Clustering System. It provides endpoints
+for event management, H3 hexagonal aggregation, and DBSCAN clustering.
+
+The API supports:
+    - Health checks for monitoring
+    - Bulk event insertion and updates
+    - Spatial queries with bounding box filtering
+    - H3 hexagonal binning for visualization
+    - DBSCAN density-based clustering
+
+Endpoints:
+    GET /health: Health check endpoint
+    POST /events/bulk: Bulk insert events
+    PATCH /events/bulk_update: Bulk update events
+    GET /events: Query events with spatial/temporal filters
+    GET /aggregations/h3: H3 hexagonal aggregation
+    GET /clusters/dbscan: DBSCAN clustering
+"""
+
 from __future__ import annotations
 from datetime import datetime
 from typing import Optional, List, Iterable
@@ -30,6 +53,18 @@ except ImportError:
 # ---------------- helpers ----------------
 
 def _clamp_bbox(minx: float, miny: float, maxx: float, maxy: float):
+    """
+    Clamp bounding box coordinates to valid geographic ranges.
+    
+    Args:
+        minx: Minimum longitude (-180 to 180)
+        miny: Minimum latitude (-85 to 85)
+        maxx: Maximum longitude (-180 to 180)
+        maxy: Maximum latitude (-85 to 85)
+    
+    Returns:
+        Tuple of clamped (minx, miny, maxx, maxy) coordinates
+    """
     minx = max(-180.0, min(180.0, float(minx)))
     maxx = max(-180.0, min(180.0, float(maxx)))
     miny = max(-85.0,  min(85.0,  float(miny)))
@@ -38,6 +73,22 @@ def _clamp_bbox(minx: float, miny: float, maxx: float, maxy: float):
 
 
 def _split_bbox(minx: float, miny: float, maxx: float, maxy: float):
+    """
+    Split a bounding box that crosses the anti-meridian into two boxes.
+    
+    Handles the case where a bounding box spans across the 180/-180 longitude
+    line by splitting it into two separate boxes.
+    
+    Args:
+        minx: Minimum longitude
+        miny: Minimum latitude
+        maxx: Maximum longitude
+        maxy: Maximum latitude
+    
+    Returns:
+        List of bounding box tuples. Returns two boxes if crossing anti-meridian,
+        otherwise returns a single box.
+    """
     minx, miny, maxx, maxy = _clamp_bbox(minx, miny, maxx, maxy)
     crosses = (maxx < minx) or ((maxx - minx) > 180.0)
     if crosses:

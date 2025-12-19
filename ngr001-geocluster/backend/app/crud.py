@@ -1,3 +1,16 @@
+"""
+CRUD Operations Module
+
+This module provides database access functions for the NGR001 Geospatial API.
+It implements Create, Read, Update operations for geospatial events with
+support for spatial queries using PostGIS.
+
+Functions:
+    bulk_insert_events: Insert multiple events in a single transaction
+    bulk_update_events: Update multiple events in a single transaction
+    query_events: Query events with spatial and temporal filters
+"""
+
 from __future__ import annotations
 from typing import Iterable, Optional, Tuple, List
 from datetime import datetime
@@ -14,15 +27,42 @@ except ImportError:
     import models, schemas
 
 BBox = Tuple[float, float, float, float]
+"""Type alias for bounding box coordinates (minx, miny, maxx, maxy)."""
+
 logger = logging.getLogger("uvicorn.error")
 
+
 def bulk_insert_events(db: Session, items: List[schemas.EventIn]) -> int:
+    """
+    Insert multiple events into the database in a single transaction.
+    
+    Args:
+        db: SQLAlchemy database session
+        items: List of EventIn schemas to insert
+    
+    Returns:
+        Number of events successfully inserted
+    """
     objs = [models.Event(**i.model_dump()) for i in items]
     db.add_all(objs)
     db.commit()
     return len(objs)
 
-def bulk_update_events(db:Session, items):
+
+def bulk_update_events(db: Session, items: List) -> int:
+    """
+    Update multiple events in the database.
+    
+    Args:
+        db: SQLAlchemy database session
+        items: List of EventUpdate schemas with id and fields to update
+    
+    Returns:
+        Number of events successfully updated
+    
+    Raises:
+        SQLAlchemyError: If database update fails
+    """
     count = 0
     for event in items:
         try:
