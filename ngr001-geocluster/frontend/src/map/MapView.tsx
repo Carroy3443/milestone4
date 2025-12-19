@@ -1,4 +1,21 @@
-﻿import { useEffect, useMemo, useRef, useState } from "react";
+/**
+ * MapView Component Module
+ * 
+ * This module provides the main interactive map visualization for the NGR001
+ * Geospatial Event Clustering System. It renders H3 hexagonal aggregations
+ * using MapLibre GL and deck.gl.
+ * 
+ * Features:
+ * - Interactive map with pan/zoom controls
+ * - H3 hexagonal visualization with 3D extrusion
+ * - Resolution slider for adjusting hexagon granularity
+ * - Dataset filtering checkboxes
+ * - Click-to-inspect hexagon events
+ * 
+ * @module map/MapView
+ */
+
+import { useEffect, useMemo, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import { MapboxOverlay } from "@deck.gl/mapbox";
 import { H3HexagonLayer } from "@deck.gl/geo-layers";
@@ -7,7 +24,10 @@ import { MAPTILER_KEY } from "../config";
 import "maplibre-gl/dist/maplibre-gl.css";
 import HexEventTable from "./TableView";
 
+/** Type definition for H3 aggregation data */
 type H3Agg = { h3: string; count: number };
+
+/** Default map center coordinates (Omaha, Nebraska area) */
 const CENTER: [number, number] = [-95.9345, 41.2565];
 
 // Must match properties->>'source' in DB
